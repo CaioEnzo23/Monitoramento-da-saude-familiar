@@ -1,7 +1,7 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:date_picker_timeline/date_picker_timeline.dart';
-import 'package:monitoramento_saude_familiar/views/widgets/item_monitoramento.dart';
+import 'package:monitoramento_saude_familiar/views/widgets/calendario_widget.dart';
+import 'package:monitoramento_saude_familiar/views/widgets/carrosel_slider_widget.dart';
+import 'package:monitoramento_saude_familiar/views/widgets/item_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,8 +12,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  DateTime _selectedValue = DateTime.now();
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -28,39 +26,12 @@ class _HomePageState extends State<HomePage> {
                 children: <Widget>[
                   SizedBox(height: 50),
 
-                  CarouselSlider(
-                    items: [
-                      for (int i = 0; i < 2; i++)
-                        Container(
-                          margin: EdgeInsets.all(11),
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.circular(21),
-                          ),
-                          child: Text(
-                            'Perfil $i',
-                            style: TextStyle(fontSize: 22, color: Colors.white),
-                          ),
-                        ),
-                    ],
-                    options: CarouselOptions(height: 80),
-                  ),
+                  CarroselSlider(),
 
                   SizedBox(height: 14),
 
-                  DatePicker(
-                    DateTime.now(),
-                    height: 100,
-                    initialSelectedDate: _selectedValue,
-                    selectionColor: Colors.black,
-                    selectedTextColor: Colors.white,
-                    onDateChange: (date) {
-                      setState(() {
-                        _selectedValue = date;
-                      });
-                    },
-                  ),
+                  Calendario(),
+
                   SizedBox(height: 14),
 
                   ListView(
@@ -68,15 +39,9 @@ class _HomePageState extends State<HomePage> {
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     children: <Widget>[
-                      ItemMonitoramento(),
-                      ItemMonitoramento(),
-                      ItemMonitoramento(),
-                      ItemMonitoramento(),
-                      ItemMonitoramento(),
-                      ItemMonitoramento(),
-                      ItemMonitoramento(),
-                      ItemMonitoramento(),
-                      ItemMonitoramento(),
+                      Item(nome: 'teste', status: 'alto'),
+                      Item(nome: 'teste', status: 'normal'),
+                      Item(nome: 'teste', status: 'baixo'),
                     ],
                   ),
                 ],

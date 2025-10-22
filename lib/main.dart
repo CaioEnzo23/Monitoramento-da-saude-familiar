@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:monitoramento_saude_familiar/views/pages/dash_page.dart';
 import 'package:monitoramento_saude_familiar/views/pages/home_page.dart';
 
 void main(List<String> args) {
