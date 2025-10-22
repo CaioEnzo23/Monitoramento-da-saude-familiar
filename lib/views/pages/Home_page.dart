@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:monitoramento_saude_familiar/views/widgets/calendario_widget.dart';
-import 'package:monitoramento_saude_familiar/views/widgets/carrosel_slider_widget.dart';
-import 'package:monitoramento_saude_familiar/views/widgets/item_widget.dart';
+import 'package:monitoramento_saude_familiar/views/widgets/Calendario_widget.dart';
+import 'package:monitoramento_saude_familiar/views/widgets/Carrosel_slider_widget.dart';
+import 'package:monitoramento_saude_familiar/views/widgets/Item_widget.dart';
+import 'package:monitoramento_saude_familiar/views/widgets/Botao_flutuante_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -49,12 +50,8 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: const Color.fromRGBO(82, 170, 94, 1.0),
-          tooltip: 'Increment',
-          onPressed: () {},
-          child: const Icon(Icons.add, color: Colors.white, size: 28),
-        ),
+
+        floatingActionButton: BotaoFlutuanteWidget(),
       ),
     );
   }

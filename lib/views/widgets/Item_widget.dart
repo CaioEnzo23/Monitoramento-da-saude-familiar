@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:monitoramento_saude_familiar/views/pages/dash_page.dart';
+import 'package:monitoramento_saude_familiar/views/pages/Dash_page.dart';
 import 'Dialog_valor_saude_widget.dart'; // 👈 importe o arquivo do diálogo
 
 class Item extends StatelessWidget {
@@ -67,7 +67,7 @@ class Item extends StatelessWidget {
                     style: const TextStyle(color: Colors.white, fontSize: 12),
                   ),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 16),
                 GestureDetector(
                   onTap: () {
                     debugPrint('Ver estatísticas de $nome');
