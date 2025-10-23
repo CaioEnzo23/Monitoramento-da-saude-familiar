@@ -12,7 +12,7 @@ class _BotaoFlutuanteWidgetState extends State<BotaoFlutuanteWidget> {
   @override
   Widget build(BuildContext context) {
     return SpeedDial(
-      backgroundColor: const Color.fromRGBO(82, 170, 94, 1.0),
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       icon: Icons.add,
       activeIcon: Icons.close,
       spacing: 10,

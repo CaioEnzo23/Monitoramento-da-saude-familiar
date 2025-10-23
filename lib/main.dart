@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:monitoramento_saude_familiar/views/pages/Home_page.dart';
 
-void main(List<String> args) {
+Future<void> main(List<String> args) async {
   runApp(AppWidet());
 }
 

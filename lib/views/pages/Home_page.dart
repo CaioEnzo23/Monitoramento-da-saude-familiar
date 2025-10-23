@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:monitoramento_saude_familiar/views/widgets/Calendario_widget.dart';
 import 'package:monitoramento_saude_familiar/views/widgets/Carrosel_slider_widget.dart';
-import 'package:monitoramento_saude_familiar/views/widgets/Item_widget.dart';
 import 'package:monitoramento_saude_familiar/views/widgets/Botao_flutuante_widget.dart';
 
 class HomePage extends StatefulWidget {
@@ -34,17 +33,6 @@ class _HomePageState extends State<HomePage> {
                   Calendario(),
 
                   SizedBox(height: 14),
-
-                  ListView(
-                    padding: const EdgeInsets.all(8),
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    children: <Widget>[
-                      Item(nome: 'teste', status: 'alto'),
-                      Item(nome: 'teste', status: 'normal'),
-                      Item(nome: 'teste', status: 'baixo'),
-                    ],
-                  ),
                 ],
               ),
             ),
