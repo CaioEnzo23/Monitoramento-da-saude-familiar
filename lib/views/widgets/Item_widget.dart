@@ -75,7 +75,7 @@ class Item extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            LineChartSample2(), // sua nova tela
+                            LineChartSample13(), // sua nova tela
                       ),
                     );
                   },
