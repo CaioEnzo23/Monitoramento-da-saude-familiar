@@ -8,24 +8,19 @@ Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Hive.openBox('tasksBox');
-  runApp(AppWidet());
+  runApp(const MyApp());
 }
 
-class AppWidet extends StatelessWidget {
-  const AppWidet({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(),
       title: "monitoramento de saude familiar",
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Gráfico de Clima'),
-          backgroundColor: Colors.black,
-        ),
-        body: const SingleChildScrollView(child: LineChartSample13()),
-      ),
+      home: Calendario(),
+    
     );
   }
 }

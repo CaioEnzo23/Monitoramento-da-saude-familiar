@@ -5,25 +5,23 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:monitoramento_saude_familiar/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
-class LineChartSample13 extends StatefulWidget {
-  const LineChartSample13({super.key});
+class Dash_page extends StatefulWidget {
+  const Dash_page({super.key});
 
   @override
-  State<LineChartSample13> createState() => _LineChartSample13State();
+  State<Dash_page> createState() => _Dash_pageState();
 }
 
-class _LineChartSample13State extends State<LineChartSample13> {
+class _Dash_pageState extends State<Dash_page> {
   List<List<FlSpot>>? monthlyMedicationData;
   int _currentMonthIndex = 0;
   late final List<String> monthsNames;
   List<Map<String, double>>? monthlyCategoryData;
   final List<Color> categoryColors = [
-    AppColors.contentColorBlue,
-    AppColors.contentColorYellow,
-    AppColors.contentColorGreen,
-    AppColors.contentColorOrange,
-    AppColors.contentColorPink,
-    AppColors.contentColorPurple,
+    const Color(0xFF8a3ffc), // Roxo 60
+    const Color(0xFF009d9a), // Marrequinha 50
+    const Color(0xFFbe95ff), // Roxo 40
+    const Color(0xFF3ddbd9), // Marrequinha 30
   ];
 
   final int minDays = 1;
@@ -117,200 +115,223 @@ class _LineChartSample13State extends State<LineChartSample13> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SizedBox(height: 18),
-        Row(
-          mainAxisSize: MainAxisSize.min,
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
           children: [
-            const Text(
-              'Remédios Tomados em 2025',
-              style: TextStyle(
-                color: AppColors.contentColorOrange,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+            Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
-            ),
-            Tooltip(
-              message: 'Dados fictícios de 2025',
-              child: IconButton(
-                  onPressed: () {
-                    // Ação opcional, como mostrar um diálogo informativo
-                  },
-                  icon: const Icon(
-                    Icons.info_outline_rounded,
-                    color: AppColors.contentColorOrange,
-                    size: 18,
-                  )),
-            )
-          ],
-        ),
-        const SizedBox(height: 18),
-        Row(
-          children: [
-            Expanded(
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: IconButton(
-                  onPressed: _canGoPrevious ? _previousMonth : null,
-                  icon: const Icon(Icons.navigate_before_rounded),
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 92,
-              child: Text(
-                monthsNames[_currentMonthIndex],
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: AppColors.contentColorBlue,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Expanded(
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: IconButton(
-                  onPressed: _canGoNext ? _nextMonth : null,
-                  icon: const Icon(Icons.navigate_next_rounded),
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 18),
-        AspectRatio(
-          aspectRatio: 1.4,
-          child: Stack(
-            children: [
-              if (monthlyMedicationData != null)
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 0.0,
-                    right: 18.0,
-                  ),
-                  child: LineChart(
-                    LineChartData(
-                      clipData: const FlClipData.all(),
-                      minY: overallMinCount,
-                      maxY: overallMaxCount + 2, // Add some padding
-                      minX: 0,
-                      maxX: 31,
-                      lineBarsData: (monthlyMedicationData == null ||
-                              monthlyMedicationData![_currentMonthIndex].isEmpty)
-                          ? []
-                          : [
-                              LineChartBarData(
-                                spots: monthlyMedicationData![_currentMonthIndex],
-                                isCurved: true,
-                                curveSmoothness: 0.3,
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    AppColors.contentColorBlue,
-                                    AppColors.contentColorCyan,
-                                  ],
-                                ),
-                                barWidth: 3,
-                                isStrokeCapRound: true,
-                                dotData: const FlDotData(show: false),
-                                belowBarData: BarAreaData(
-                                  show: true,
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      AppColors.contentColorBlue.withAlpha((255 * 0.3).round()),
-                                      AppColors.contentColorCyan.withAlpha(0),
-                                    ],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                  ),
-                                ),
-                              ),
-                            ],
-                      gridData: FlGridData(
-                        show: true,
-                        drawHorizontalLine: true,
-                        drawVerticalLine: false,
-                        horizontalInterval: 1,
-                        getDrawingHorizontalLine: _horizontalGridLines,
-                      ),
-                      titlesData: FlTitlesData(
-                        show: true,
-                        rightTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
-                        ),
-                        topTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
-                        ),
-                        leftTitles: AxisTitles(
-                          drawBelowEverything: true,
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 40,
-                            getTitlesWidget: (double value, TitleMeta meta) {
-                              return SideTitleWidget(
-                                meta: meta,
-                                child: Text(
-                                  meta.formattedValue,
-                                ),
-                              );
-                            },
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text(
+                          'Remédios Tomados em 2025',
+                          style: TextStyle(
+                            color: Color(0xFF424242), // Cor do título alterada
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        bottomTitles: AxisTitles(
-                          axisNameWidget: Container(
-                            margin: const EdgeInsets.only(bottom: 20),
-                            child: const Text(
-                              'Dia do mês',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
+                      ],
+                    ),
+                    const SizedBox(height: 18),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: IconButton(
+                              onPressed: _canGoPrevious ? _previousMonth : null,
+                              icon: const Icon(Icons.navigate_before_rounded),
                             ),
                           ),
-                          axisNameSize: 40,
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 38,
-                            interval: 1,
-                            getTitlesWidget: _bottomTitles,
+                        ),
+                        SizedBox(
+                          width: 92,
+                          child: Text(
+                            monthsNames[_currentMonthIndex],
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Color(0xFF8a3ffc), // Roxo 60
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                      lineTouchData: LineTouchData(
-                        touchTooltipData: _tooltipData(context),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: IconButton(
+                              onPressed: _canGoNext ? _nextMonth : null,
+                              icon: const Icon(Icons.navigate_next_rounded),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 18),
+                    AspectRatio(
+                      aspectRatio: 1.4,
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 400),
+                        switchInCurve: Curves.linear,
+                        switchOutCurve: Curves.linear,
+                        child: monthlyMedicationData != null
+                            ? Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 0.0,
+                                  right: 18.0,
+                                ),
+                                child: LineChart(
+                                  LineChartData(
+                                    clipData: const FlClipData.all(),
+                                    minY: overallMinCount,
+                                    maxY: overallMaxCount + 2,
+                                    minX: 0,
+                                    maxX: 31,
+                                    lineBarsData: (monthlyMedicationData ==
+                                                null ||
+                                            monthlyMedicationData![
+                                                    _currentMonthIndex]
+                                                .isEmpty)
+                                        ? []
+                                        : [
+                                            LineChartBarData(
+                                              spots: monthlyMedicationData![
+                                                  _currentMonthIndex],
+                                              isCurved: true,
+                                              curveSmoothness: 0.3,
+                                              gradient: const LinearGradient(
+                                                colors: [
+                                                  Color(0xFF007d79), // Marrequinha 60
+                                                  Color(0xFF009d9a), // Marrequinha 50
+                                                ],
+                                              ),
+                                              barWidth: 3,
+                                              isStrokeCapRound: true,
+                                              dotData: const FlDotData(show: false),
+                                              belowBarData: BarAreaData(
+                                                show: true,
+                                                gradient: LinearGradient(
+                                                  colors: [
+                                                    const Color(0xFF9ef0f0).withOpacity(0.3),
+                                                    const Color(0xFF9ef0f0).withOpacity(0),
+                                                  ],
+                                                  begin: Alignment.topCenter,
+                                                  end: Alignment.bottomCenter,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                    gridData: FlGridData(
+                                      show: true,
+                                      drawHorizontalLine: true,
+                                      drawVerticalLine: false,
+                                      horizontalInterval: 1,
+                                      getDrawingHorizontalLine: _horizontalGridLines,
+                                    ),
+                                    titlesData: FlTitlesData(
+                                      show: true,
+                                      rightTitles: const AxisTitles(
+                                        sideTitles: SideTitles(showTitles: false),
+                                      ),
+                                      topTitles: const AxisTitles(
+                                        sideTitles: SideTitles(showTitles: false),
+                                      ),
+                                      leftTitles: AxisTitles(
+                                        drawBelowEverything: true,
+                                        sideTitles: SideTitles(
+                                          showTitles: true,
+                                          reservedSize: 40,
+                                          getTitlesWidget: (double value, TitleMeta meta) {
+                                            return SideTitleWidget(
+                                              meta: meta,
+                                              child: Text(
+                                                meta.formattedValue,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                      bottomTitles: AxisTitles(
+                                        axisNameWidget: Container(
+                                          margin: const EdgeInsets.only(bottom: 20),
+                                          child: const Text(
+                                            'Dia do mês',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                        axisNameSize: 40,
+                                        sideTitles: SideTitles(
+                                          showTitles: true,
+                                          reservedSize: 38,
+                                          interval: 1,
+                                          getTitlesWidget: _bottomTitles,
+                                        ),
+                                      ),
+                                    ),
+                                    lineTouchData: LineTouchData(
+                                      touchTooltipData: _tooltipData(context),
+                                    ),
+                                  ),
+                                  key: ValueKey<int>(_currentMonthIndex),
+                                ),
+                              )
+                            : const Center(
+                                child: CircularProgressIndicator(),
+                              ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              if (monthlyMedicationData == null)
-                const Center(
-                  child: CircularProgressIndicator(),
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Text(
+                      'Categorias de Remédios',
+                      style: TextStyle(
+                        color: Colors.grey[800], // Cor do título alterada
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    AspectRatio(
+                      aspectRatio: 1, // Proporção ajustada para o gráfico de barras
+                      child: _buildBarChart(),
+                    ),
+                  ],
                 ),
-            ],
-          ),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 24),
-        const Text(
-          'Categorias de Remédios',
-          style: TextStyle(
-            color: AppColors.contentColorOrange,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 18),
-        AspectRatio(
-          aspectRatio: 1.6,
-          child: _buildPieChart(),
-        ),
-      ],
+      ),
     );
   }
 
-  Widget _buildPieChart() {
+  Widget _buildBarChart() {
     if (monthlyCategoryData == null) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -329,68 +350,124 @@ class _LineChartSample13State extends State<LineChartSample13> {
       );
     }
 
-    final totalValue = categoryData.values.fold(0.0, (a, b) => a + b);
-    final List<PieChartSectionData> sections = [];
-    int colorIndex = 0;
+    double maxValue = 0;
+    for (var entry in categoryData.entries) {
+      if (entry.value > maxValue) {
+        maxValue = entry.value;
+      }
+    }
 
-    categoryData.forEach((category, value) {
-      final percentage = (value / totalValue) * 100;
-      final section = PieChartSectionData(
-        color: categoryColors[colorIndex % categoryColors.length],
-        value: value,
-        title: '${percentage.toStringAsFixed(1)}%',
-        radius: 100,
-        titleStyle: const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-          color: AppColors.contentColorWhite,
+    final barGroups = <BarChartGroupData>[];
+    int x = 0;
+    for (var entry in categoryData.entries) {
+      barGroups.add(
+        BarChartGroupData(
+          x: x,
+          barRods: [
+            BarChartRodData(
+              toY: entry.value,
+              color: categoryColors[x % categoryColors.length],
+              width: 22,
+              borderRadius: BorderRadius.zero,
+            ),
+          ],
+          showingTooltipIndicators: const [0],
         ),
       );
-      sections.add(section);
-      colorIndex++;
-    });
+      x++;
+    }
 
-    return Row(
-      children: [
-        Expanded(
-          child: PieChart(
-            PieChartData(
-              sections: sections,
-              borderData: FlBorderData(show: false),
-              sectionsSpace: 2,
-              centerSpaceRadius: 0,
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 400),
+      switchInCurve: Curves.linear,
+      switchOutCurve: Curves.linear,
+      child: BarChart(
+        BarChartData(
+          maxY: maxValue + 5,
+          alignment: BarChartAlignment.spaceAround,
+          barGroups: barGroups,
+          barTouchData: BarTouchData(
+            enabled: false,
+            touchTooltipData: BarTouchTooltipData(
+              getTooltipColor: (group) => Colors.transparent,
+              tooltipBorder: BorderSide.none,
+              getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                return BarTooltipItem(
+                  rod.toY.round().toString(),
+                  const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                );
+              },
             ),
           ),
-        ),
-        const SizedBox(width: 20),
-        _buildLegend(categoryData),
-      ],
-    );
-  }
-
-  Widget _buildLegend(Map<String, double> categoryData) {
-    int colorIndex = 0;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: categoryData.keys.map((category) {
-        final color = categoryColors[colorIndex % categoryColors.length];
-        colorIndex++;
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
-          child: Row(
-            children: [
-              Container(
-                width: 16,
-                height: 16,
-                color: color,
+          titlesData: FlTitlesData(
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: false,
+                reservedSize: 30,
+                getTitlesWidget: (double value, TitleMeta meta) {
+                  if (value == 0) {
+                    return const Text('');
+                  }
+                  return Text(
+                    value.toInt().toString(),
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                    ),
+                  );
+                },
               ),
-              const SizedBox(width: 8),
-              Text(category),
-            ],
+            ),
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            rightTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: (double value, TitleMeta meta) {
+                  final index = value.toInt();
+                  if (index >= 0 && index < categoryData.keys.length) {
+                    return SideTitleWidget(
+                      meta: meta,
+                      space: 8.0,
+                      child: Text(
+                        categoryData.keys.elementAt(index),
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    );
+                  }
+                  return const Text('');
+                },
+                reservedSize: 30,
+              ),
+            ),
           ),
-        );
-      }).toList(),
+          gridData: FlGridData(
+            show: true,
+            drawVerticalLine: false,
+            horizontalInterval: 1,
+            getDrawingHorizontalLine: (value) {
+              return const FlLine(
+                color: Colors.transparent,
+              );
+            },
+          ),
+          borderData: FlBorderData(
+            show: false,
+          ),
+        ),
+        key: ValueKey<int>(_currentMonthIndex),
+      ),
     );
   }
 
@@ -422,9 +499,8 @@ class _LineChartSample13State extends State<LineChartSample13> {
     return FlLine(
       color: isZero
           ? Colors.transparent
-          : Colors.blueGrey.withAlpha((255 * 0.3).round()),
-      strokeWidth: isZero ? 0.8 : 0.4,
-      dashArray: isZero ? null : [8, 4],
+          : Colors.grey.withOpacity(0.2),
+      strokeWidth: 0.5,
     );
   }
 
@@ -466,14 +542,8 @@ class _LineChartSample13State extends State<LineChartSample13> {
           final count = barSpot.y.toInt();
 
           return LineTooltipItem(
-            '$day/${_currentMonthIndex + 1}\n',
+            'Dia $day: $count remédios',
             textStyle,
-            children: [
-              TextSpan(
-                text: 'Remédios: $count',
-                style: const TextStyle(color: AppColors.contentColorCyan),
-              ),
-            ],
           );
         }).toList();
       },
