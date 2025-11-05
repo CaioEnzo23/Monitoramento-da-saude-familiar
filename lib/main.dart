@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:monitoramento_saude_familiar/models/database_helper.dart';
 import 'package:monitoramento_saude_familiar/views/pages/Dash_page.dart';
 import 'package:monitoramento_saude_familiar/views/pages/Home_page.dart';
 import 'package:monitoramento_saude_familiar/views/pages/Teste_page.dart';
 
 Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
-  await Hive.openBox('tasksBox');
+  //inicia o banco de dados
+  await DatabaseHelper.instance.database;
   runApp(const MyApp());
 }
 

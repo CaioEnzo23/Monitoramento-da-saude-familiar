@@ -1,7 +1,6 @@
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -41,13 +40,10 @@ class _CalendarioState extends State<Calendario> {
     'Dom': false,
   };
 
-  late Box _box;
-
   @override
   void initState() {
     super.initState();
     _initNotifications();
-    _loadRemedios();
   }
 
   Future<void> _initNotifications() async {
@@ -147,24 +143,6 @@ class _CalendarioState extends State<Calendario> {
     );
   }
 
-  Future<void> _loadRemedios() async {
-    _box = await Hive.openBox('remediosBox');
-    final storedData = _box.get('remedios') ?? {};
-    setState(() {
-      _remedios = (storedData as Map).map((key, value) => MapEntry(
-          DateTime.parse(key),
-          List<Map<String, dynamic>>.from(
-              value.map((item) => Map<String, dynamic>.from(item)))));
-    });
-  }
-
-  Future<void> _saveRemedios() async {
-    final dataToStore = _remedios.map(
-      (key, value) => MapEntry(key.toIso8601String(), value),
-    );
-    await _box.put('remedios', dataToStore);
-  }
-
   @override
   Widget build(BuildContext context) {
     final remediosForDay = _remedios[_selectedDate] ?? [];
@@ -236,7 +214,6 @@ class _CalendarioState extends State<Calendario> {
                             onPressed: () {
                               setState(() {
                                 remediosForDay.removeAt(index);
-                                _saveRemedios();
                               });
                             },
                           ),
@@ -424,7 +401,6 @@ class _CalendarioState extends State<Calendario> {
           _adicionarPorDiasEspecificos(remedioData);
           break;
       }
-      _saveRemedios();
     });
   }
 
