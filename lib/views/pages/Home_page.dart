@@ -110,8 +110,20 @@ class _HomePageState extends State<HomePage> {
 
   void _deleteProfile(int index) {
     setState(() {
+      _metricas.remove(index);
+      final newMetricas = <int, Map<DateTime, List<Map<String, dynamic>>>>{};
+      _metricas.forEach((key, value) {
+        if (key > index) {
+          newMetricas[key - 1] = value;
+        } else {
+          newMetricas[key] = value;
+        }
+      });
+      _metricas = newMetricas;
+
       _profiles.removeAt(index);
       _saveProfiles();
+      _saveMetricas();
     });
   }
 
