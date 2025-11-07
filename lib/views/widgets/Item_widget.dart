@@ -5,17 +5,33 @@ import 'Dialog_valor_saude_widget.dart'; // 👈 importe o arquivo do diálogo
 class Item extends StatelessWidget {
   final String nome;
   final String status;
+  final String? hora;
+  final VoidCallback? onDelete;
+  final void Function(Map<String, String> values)? onValueSaved;
+  final VoidCallback? onGraphTap;
 
-  const Item({super.key, required this.nome, required this.status});
+  const Item({
+    super.key,
+    required this.nome,
+    required this.status,
+    this.hora,
+    this.onDelete,
+    this.onValueSaved,
+    this.onGraphTap,
+  });
 
   Color _getStatusColor() {
     switch (status.toLowerCase()) {
+      case 'pendente':
+        return Colors.grey;
       case 'normal':
         return Colors.green;
       case 'alto':
         return Colors.redAccent;
       case 'baixo':
         return Colors.blueAccent;
+      case 'preenchido':
+        return Colors.green;
       default:
         return Colors.grey;
     }
@@ -27,10 +43,10 @@ class Item extends StatelessWidget {
       onTap: () => abrirDialogValorSaude(
         context: context,
         nome: nome,
-        onSave: (valor) {
+        onSave: onValueSaved ?? (valores) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text("Valor inserido para $nome: $valor"),
+              content: Text("Valores inseridos para $nome: $valores"),
               backgroundColor: Colors.black,
             ),
           );
@@ -47,12 +63,21 @@ class Item extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              nome,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
+            Flexible(
+              child: Text(
+                nome,
+                style: const TextStyle(color: Colors.white, fontSize: 16),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
             Row(
               children: [
+                if (hora != null)
+                  Text(
+                    hora!,
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                  ),
+                if (hora != null) const SizedBox(width: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10,
@@ -68,23 +93,20 @@ class Item extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 16),
-                GestureDetector(
-                  onTap: () {
-                    debugPrint('Ver estatísticas de $nome');
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            Dash_page(), // sua nova tela
-                      ),
-                    );
-                  },
-                  child: const Icon(
-                    Icons.bar_chart_rounded,
-                    color: Colors.white,
-                    size: 22,
+                if (onGraphTap != null)
+                  GestureDetector(
+                    onTap: onGraphTap,
+                    child: const Icon(
+                      Icons.bar_chart_rounded,
+                      color: Colors.white,
+                      size: 22,
+                    ),
                   ),
-                ),
+                if (onDelete != null)
+                  IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.redAccent),
+                    onPressed: onDelete,
+                  ),
               ],
             ),
           ],

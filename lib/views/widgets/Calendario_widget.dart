@@ -2,7 +2,8 @@ import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
 
 class Calendario extends StatefulWidget {
-  const Calendario({super.key});
+  final Function(DateTime) onDateChange;
+  const Calendario({super.key, required this.onDateChange});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -20,11 +21,12 @@ class _CalendarioState extends State<Calendario> {
       DateTime.now(),
       height: 100,
       initialSelectedDate: _selectedValue,
-      selectionColor: Colors.black,
+      selectionColor: Colors.green,
       selectedTextColor: Colors.white,
       onDateChange: (date) {
         setState(() {
           _selectedValue = date;
+          widget.onDateChange(date);
         });
       },
     );

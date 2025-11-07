@@ -1,34 +1,88 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:monitoramento_saude_familiar/models/profile_model.dart';
 
-class CarroselSlider extends StatefulWidget {
-  const CarroselSlider({super.key});
+class CarroselSlider extends StatelessWidget {
+  final List<Profile> profiles;
+  final void Function(int index, CarouselPageChangedReason reason)? onPageChanged;
+  final VoidCallback onAddProfile;
+  final Function(int) onDeleteProfile;
 
-  @override
-  // ignore: library_private_types_in_public_api
-  _CarroselSliderState createState() => _CarroselSliderState();
-}
+  const CarroselSlider({
+    super.key,
+    required this.profiles,
+    this.onPageChanged,
+    required this.onAddProfile,
+    required this.onDeleteProfile,
+  });
 
-class _CarroselSliderState extends State<CarroselSlider> {
   @override
   Widget build(BuildContext context) {
     return CarouselSlider(
       items: [
-        for (int i = 0; i < 2; i++)
-          Container(
-            margin: EdgeInsets.all(11),
+        ...profiles.asMap().entries.map((entry) {
+          int index = entry.key;
+          Profile profile = entry.value;
+          return Container(
+            margin: const EdgeInsets.all(11),
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(21),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(21.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        profile.nome,
+                        style: const TextStyle(fontSize: 22, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => onDeleteProfile(index),
+                    child: Container(
+                      width: 50,
+                      color: Colors.red,
+                      child: const Icon(Icons.remove, color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+        GestureDetector(
+          onTap: onAddProfile,
+          child: Container(
+            margin: const EdgeInsets.all(11),
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: Colors.black,
               borderRadius: BorderRadius.circular(21),
             ),
-            child: Text(
-              'Perfil $i',
-              style: TextStyle(fontSize: 22, color: Colors.white),
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+              child: const Icon(
+                Icons.add,
+                size: 32,
+                color: Colors.black,
+              ),
             ),
           ),
+        ),
       ],
-      options: CarouselOptions(height: 80),
+      options: CarouselOptions(
+        height: 100,
+        onPageChanged: onPageChanged,
+      ),
     );
   }
 }
