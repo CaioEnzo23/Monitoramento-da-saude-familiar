@@ -105,6 +105,50 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  String? _validateRequiredText(String? value, String message) {
+    if (value == null || value.trim().isEmpty) {
+      return message;
+    }
+    return null;
+  }
+
+  String? _validatePositiveInt(String? value, String message) {
+    if (value == null || value.trim().isEmpty) {
+      return message;
+    }
+    final parsed = int.tryParse(value);
+    if (parsed == null || parsed <= 0) {
+      return message;
+    }
+    return null;
+  }
+
+  String? _validatePositiveDouble(String? value, String message) {
+    if (value == null || value.trim().isEmpty) {
+      return message;
+    }
+    final parsed = double.tryParse(value.replaceAll(',', '.'));
+    if (parsed == null || parsed <= 0) {
+      return message;
+    }
+    return null;
+  }
+
+  double _parseToDouble(String value) =>
+      double.parse(value.replaceAll(',', '.'));
+
+  Future<void> _addProfile(Profile profile, {bool makePrimary = false}) async {
+    setState(() {
+      if (makePrimary) {
+        _profiles.insert(0, profile);
+        _currentProfileIndex = 0;
+      } else {
+        _profiles.add(profile);
+      }
+    });
+    await _saveProfiles();
+  }
+
   Future<void> _saveProfiles() async {
     await _profilesBox.clear();
     for (var profile in _profiles) {
@@ -267,6 +311,17 @@ class _HomePageState extends State<HomePage> {
         ? []
         : [
             ...metricsForDay.map((metrica) {
+              final Map<dynamic, dynamic>? rawValues =
+                  metrica['valores'] as Map<dynamic, dynamic>?;
+              final Map<String, dynamic>? valoresFormatados = rawValues == null
+                  ? null
+                  : rawValues.entries.fold<Map<String, dynamic>>(
+                      {},
+                      (acc, entry) {
+                        acc[entry.key.toString()] = entry.value;
+                        return acc;
+                      },
+                    );
               return Item(
                 nome: metrica['nome'],
                 status: (metrica['valores'] == null ||
@@ -276,6 +331,7 @@ class _HomePageState extends State<HomePage> {
                         metrica['constancia'] ??
                         "Registrado",
                 hora: metrica['hora'],
+                valores: valoresFormatados,
                 onValueSaved: (valores) {
                   setState(() {
                     metrica['valores'] = valores;
@@ -714,44 +770,57 @@ class _HomePageState extends State<HomePage> {
     final idadeController = TextEditingController();
     final pesoController = TextEditingController();
     final alturaController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Criar Novo Perfil'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: nomeController,
-                decoration: const InputDecoration(labelText: 'Nome'),
-              ),
-              TextFormField(
-                controller: idadeController,
-                decoration: const InputDecoration(labelText: 'Idade'),
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              ),
-              TextFormField(
-                controller: pesoController,
-                decoration: const InputDecoration(labelText: 'Peso (KG)'),
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'^\d*[,.]?\d*$')),
-                ],
-              ),
-              TextFormField(
-                controller: alturaController,
-                decoration: const InputDecoration(labelText: 'Altura (metros)'),
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp(r'^\d*[,.]?\d*$')),
-                ],
-              ),
-            ],
+          content: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: nomeController,
+                  decoration: const InputDecoration(labelText: 'Nome'),
+                  validator: (value) =>
+                      _validateRequiredText(value, 'Informe o nome'),
+                ),
+                TextFormField(
+                  controller: idadeController,
+                  decoration: const InputDecoration(labelText: 'Idade'),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  validator: (value) =>
+                      _validatePositiveInt(value, 'Informe uma idade válida'),
+                ),
+                TextFormField(
+                  controller: pesoController,
+                  decoration: const InputDecoration(labelText: 'Peso (KG)'),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'^\d*[,.]?\d*$')),
+                  ],
+                  validator: (value) =>
+                      _validatePositiveDouble(value, 'Informe um peso válido'),
+                ),
+                TextFormField(
+                  controller: alturaController,
+                  decoration:
+                      const InputDecoration(labelText: 'Altura (metros)'),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'^\d*[,.]?\d*$')),
+                  ],
+                  validator: (value) =>
+                      _validatePositiveDouble(value, 'Informe uma altura válida'),
+                ),
+              ],
+            ),
           ),
           actions: [
             TextButton(
@@ -761,20 +830,18 @@ class _HomePageState extends State<HomePage> {
               child: const Text('Cancelar'),
             ),
             ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _profiles.add(
-                    Profile(
-                      nome: nomeController.text,
-                      idade: int.parse(idadeController.text),
-                      peso:
-                          double.parse(pesoController.text.replaceAll(',', '.')),
-                      altura: double.parse(
-                          alturaController.text.replaceAll(',', '.')),
-                    ),
-                  );
-                  _saveProfiles();
-                });
+              onPressed: () async {
+                if (!(formKey.currentState?.validate() ?? false)) {
+                  return;
+                }
+                final profile = Profile(
+                  nome: nomeController.text.trim(),
+                  idade: int.parse(idadeController.text),
+                  peso: _parseToDouble(pesoController.text),
+                  altura: _parseToDouble(alturaController.text),
+                );
+                await _addProfile(profile);
+                if (!mounted) return;
                 Navigator.of(context).pop();
               },
               child: const Text('Salvar'),
@@ -813,28 +880,16 @@ class _HomePageState extends State<HomePage> {
                   TextFormField(
                     controller: nomeController,
                     decoration: const InputDecoration(labelText: 'Nome'),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Informe o nome';
-                      }
-                      return null;
-                    },
+                    validator: (value) =>
+                        _validateRequiredText(value, 'Informe o nome'),
                   ),
                   TextFormField(
                     controller: idadeController,
                     decoration: const InputDecoration(labelText: 'Idade'),
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Informe a idade';
-                      }
-                      final idade = int.tryParse(value);
-                      if (idade == null || idade <= 0) {
-                        return 'Informe uma idade válida';
-                      }
-                      return null;
-                    },
+                    validator: (value) =>
+                        _validatePositiveInt(value, 'Informe uma idade válida'),
                   ),
                   TextFormField(
                     controller: pesoController,
@@ -844,17 +899,8 @@ class _HomePageState extends State<HomePage> {
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'^\d*[,.]?\d*$')),
                     ],
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Informe o peso';
-                      }
-                      final peso =
-                          double.tryParse(value.replaceAll(',', '.'));
-                      if (peso == null || peso <= 0) {
-                        return 'Informe um peso válido';
-                      }
-                      return null;
-                    },
+                    validator: (value) =>
+                        _validatePositiveDouble(value, 'Informe um peso válido'),
                   ),
                   TextFormField(
                     controller: alturaController,
@@ -865,17 +911,8 @@ class _HomePageState extends State<HomePage> {
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'^\d*[,.]?\d*$')),
                     ],
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Informe a altura';
-                      }
-                      final altura =
-                          double.tryParse(value.replaceAll(',', '.'));
-                      if (altura == null || altura <= 0) {
-                        return 'Informe uma altura válida';
-                      }
-                      return null;
-                    },
+                    validator: (value) => _validatePositiveDouble(
+                        value, 'Informe uma altura válida'),
                   ),
                 ],
               ),
@@ -890,19 +927,13 @@ class _HomePageState extends State<HomePage> {
                 final profile = Profile(
                   nome: nomeController.text.trim(),
                   idade: int.parse(idadeController.text),
-                  peso: double.parse(pesoController.text.replaceAll(',', '.')),
-                  altura:
-                      double.parse(alturaController.text.replaceAll(',', '.')),
+                  peso: _parseToDouble(pesoController.text),
+                  altura: _parseToDouble(alturaController.text),
                 );
-                setState(() {
-                  _profiles = [profile, ..._profiles];
-                  _currentProfileIndex = 0;
-                });
-                await _saveProfiles();
+                await _addProfile(profile, makePrimary: true);
                 await _settingsBox.put('mainUserRegistered', true);
-                if (mounted) {
-                  Navigator.of(context).pop();
-                }
+                if (!mounted) return;
+                Navigator.of(context).pop();
               },
               child: const Text('Salvar'),
             ),
@@ -910,6 +941,12 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _metricaController.dispose();
+    super.dispose();
   }
 
   String _getMetricStatus(String metricName, Map<String, String> values) {
