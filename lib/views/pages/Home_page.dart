@@ -59,6 +59,8 @@ class _HomePageState extends State<HomePage> {
 
   late Box _box;
   late Box<Profile> _profilesBox;
+  late Box<bool> _settingsBox;
+  bool _shouldPromptMainUser = false;
 
   @override
   void initState() {
@@ -77,28 +79,30 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         _isLoading = false;
       });
+      if (_shouldPromptMainUser) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _showMainUserRegistrationDialog();
+          }
+        });
+      }
     }
   }
 
   Future<void> _openBoxes() async {
     _box = await Hive.openBox('metricasBox');
     _profilesBox = Hive.box<Profile>('profilesBox');
+    _settingsBox = await Hive.openBox<bool>('settingsBox');
   }
 
   void _loadProfiles() {
     final profiles = _profilesBox.values.toList();
-    if (profiles.isEmpty) {
-      final defaultProfile = Profile(
-          nome: 'Perfil 1', idade: 30, peso: 70, altura: 1.75);
-      _profilesBox.add(defaultProfile);
-      setState(() {
-        _profiles = [defaultProfile];
-      });
-    } else {
-      setState(() {
-        _profiles = profiles;
-      });
-    }
+    final hasMainUser =
+        _settingsBox.get('mainUserRegistered', defaultValue: false) ?? false;
+    _shouldPromptMainUser = profiles.isEmpty && !hasMainUser;
+    setState(() {
+      _profiles = profiles;
+    });
   }
 
   Future<void> _saveProfiles() async {
@@ -217,7 +221,7 @@ class _HomePageState extends State<HomePage> {
           int.tryParse(storedData.keys.first.toString()) == null) {
         // Old format, migrate to new format
         final Map<DateTime, List<Map<String, dynamic>>> oldMetrics =
-            (storedData as Map).map((key, value) => MapEntry(
+            storedData.map((key, value) => MapEntry(
                 DateTime.parse(key.toString()),
                 List<Map<String, dynamic>>.from((value as List)
                     .map((item) => Map<String, dynamic>.from(item)))));
@@ -228,7 +232,7 @@ class _HomePageState extends State<HomePage> {
       } else {
         // New format
         setState(() {
-          _metricas = (storedData as Map).map((profileIndex, profileData) =>
+          _metricas = storedData.map((profileIndex, profileData) =>
               MapEntry(
                   int.parse(profileIndex.toString()),
                   (profileData as Map).map((date, metrics) => MapEntry(
@@ -772,6 +776,133 @@ class _HomePageState extends State<HomePage> {
                   _saveProfiles();
                 });
                 Navigator.of(context).pop();
+              },
+              child: const Text('Salvar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showMainUserRegistrationDialog() {
+    _shouldPromptMainUser = false;
+    final formKey = GlobalKey<FormState>();
+    final nomeController = TextEditingController();
+    final idadeController = TextEditingController();
+    final pesoController = TextEditingController();
+    final alturaController = TextEditingController();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Bem-vindo!'),
+          content: Form(
+            key: formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Cadastre o usuário principal para começar a monitorar.',
+                  ),
+                  const SizedBox(height: 12),
+                  TextFormField(
+                    controller: nomeController,
+                    decoration: const InputDecoration(labelText: 'Nome'),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Informe o nome';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: idadeController,
+                    decoration: const InputDecoration(labelText: 'Idade'),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Informe a idade';
+                      }
+                      final idade = int.tryParse(value);
+                      if (idade == null || idade <= 0) {
+                        return 'Informe uma idade válida';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: pesoController,
+                    decoration: const InputDecoration(labelText: 'Peso (KG)'),
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'^\d*[,.]?\d*$')),
+                    ],
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Informe o peso';
+                      }
+                      final peso =
+                          double.tryParse(value.replaceAll(',', '.'));
+                      if (peso == null || peso <= 0) {
+                        return 'Informe um peso válido';
+                      }
+                      return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: alturaController,
+                    decoration:
+                        const InputDecoration(labelText: 'Altura (metros)'),
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'^\d*[,.]?\d*$')),
+                    ],
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Informe a altura';
+                      }
+                      final altura =
+                          double.tryParse(value.replaceAll(',', '.'));
+                      if (altura == null || altura <= 0) {
+                        return 'Informe uma altura válida';
+                      }
+                      return null;
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () async {
+                if (!(formKey.currentState?.validate() ?? false)) {
+                  return;
+                }
+                final profile = Profile(
+                  nome: nomeController.text.trim(),
+                  idade: int.parse(idadeController.text),
+                  peso: double.parse(pesoController.text.replaceAll(',', '.')),
+                  altura:
+                      double.parse(alturaController.text.replaceAll(',', '.')),
+                );
+                setState(() {
+                  _profiles = [profile, ..._profiles];
+                  _currentProfileIndex = 0;
+                });
+                await _saveProfiles();
+                await _settingsBox.put('mainUserRegistered', true);
+                if (mounted) {
+                  Navigator.of(context).pop();
+                }
               },
               child: const Text('Salvar'),
             ),
