@@ -49,11 +49,13 @@ class Item extends StatelessWidget {
     });
 
     if (mappedValues.length == 1) {
-      return mappedValues.values.first.toString();
+      final entry = mappedValues.entries.first;
+      return _formatSingleEntry(entry.key, entry.value.toString());
     }
 
     return mappedValues.entries
-        .map((entry) => '${entry.key}: ${entry.value}')
+        .map((entry) =>
+            _formatLabeledEntry(entry.key, entry.value.toString()))
         .join('  •  ');
   }
 
@@ -69,9 +71,51 @@ class Item extends StatelessWidget {
         return 'BPM';
       case 'valor':
         return 'Valor';
+      case 'peso':
+        return 'Peso';
+      case 'altura':
+        return 'Altura';
       default:
         if (key.isEmpty) return key;
         return key[0].toUpperCase() + key.substring(1);
+    }
+  }
+
+  String _formatSingleEntry(String label, String value) {
+    final valueWithUnit = _attachUnit(value, label: label);
+    if (label.toLowerCase() == 'valor') {
+      return valueWithUnit;
+    }
+    return '$label: $valueWithUnit';
+  }
+
+  String _formatLabeledEntry(String label, String value) {
+    final valueWithUnit = _attachUnit(value, label: label);
+    return '$label: $valueWithUnit';
+  }
+
+  String _attachUnit(String value, {required String label}) {
+    switch (nome) {
+      case 'Peso':
+        return '$value kg';
+      case 'Altura':
+        return '$value m';
+      case 'Temperatura':
+        return '$value °C';
+      case 'Glicemia em Jejum':
+      case 'Glicemia Pós Brandial':
+        return '$value mg/dL';
+      default:
+        if (label == 'SpO₂') {
+          return '$value%';
+        }
+        if (label == 'BPM') {
+          return '$value bpm';
+        }
+        if (label == 'Sistólica' || label == 'Diastólica') {
+          return '$value mmHg';
+        }
+        return value;
     }
   }
 

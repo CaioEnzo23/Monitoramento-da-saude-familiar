@@ -31,6 +31,8 @@ class _HomePageState extends State<HomePage> {
     'Pressão Arterial',
     'Oxigenação e Pulso',
     'Temperatura',
+    'Peso',
+    'Altura',
     'Personalizado'
   ];
   String _selectedConstancia = 'Única';
@@ -285,6 +287,7 @@ class _HomePageState extends State<HomePage> {
                           .map((item) => Map<String, dynamic>.from(item)))))));
         });
       }
+      await _migrateLegacyCombinedMetrics();
     }
   }
 
@@ -295,6 +298,63 @@ class _HomePageState extends State<HomePage> {
           (key, value) => MapEntry(key.toIso8601String(), value),
         )));
     await _box.put('metricas', dataToStore);
+  }
+
+  Future<void> _migrateLegacyCombinedMetrics() async {
+    bool updated = false;
+    final Map<int, Map<DateTime, List<Map<String, dynamic>>>> newMetricas = {};
+
+    _metricas.forEach((profileIndex, profileData) {
+      final Map<DateTime, List<Map<String, dynamic>>> newProfileData = {};
+
+      profileData.forEach((date, metricsList) {
+        final List<Map<String, dynamic>> newMetricsList = [];
+
+        for (final metric in metricsList) {
+          if (metric['nome'] == 'Peso e Altura') {
+            updated = true;
+            final Map<dynamic, dynamic>? valoresRaw =
+                metric['valores'] as Map<dynamic, dynamic>?;
+            final String? pesoValor =
+                valoresRaw?['peso']?.toString() ?? valoresRaw?['valor']?.toString();
+            final String? alturaValor =
+                valoresRaw?['altura']?.toString() ??
+                    valoresRaw?['valorAltura']?.toString();
+
+            Map<String, dynamic> criarMetric(
+                {required String nome, String? valor}) {
+              final novoMetric = Map<String, dynamic>.from(metric);
+              novoMetric['nome'] = nome;
+              if (valor != null && valor.isNotEmpty) {
+                novoMetric['valores'] = {'valor': valor};
+                novoMetric['status'] =
+                    _getMetricStatus(nome, {'valor': valor});
+              } else {
+                novoMetric.remove('valores');
+                novoMetric['status'] = 'Pendente';
+              }
+              return novoMetric;
+            }
+
+            newMetricsList.add(criarMetric(nome: 'Peso', valor: pesoValor));
+            newMetricsList.add(criarMetric(nome: 'Altura', valor: alturaValor));
+          } else {
+            newMetricsList.add(metric);
+          }
+        }
+
+        newProfileData[date] = newMetricsList;
+      });
+
+      newMetricas[profileIndex] = newProfileData;
+    });
+
+    if (updated) {
+      setState(() {
+        _metricas = newMetricas;
+      });
+      await _saveMetricas();
+    }
   }
 
   @override
@@ -984,6 +1044,12 @@ class _HomePageState extends State<HomePage> {
         if (value > 37.2) return 'Alto';
         if (value >= 36.5 && value <= 37.2) return 'Normal';
         return 'Baixo';
+      case 'Peso':
+        if (value <= 0) return 'Pendente';
+        return 'Preenchido';
+      case 'Altura':
+        if (value <= 0) return 'Pendente';
+        return 'Preenchido';
       default:
         return 'Preenchido';
     }

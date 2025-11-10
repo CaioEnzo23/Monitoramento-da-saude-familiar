@@ -27,6 +27,10 @@ class DialogValorSaudeWidget extends StatelessWidget {
         return _buildDualValueDialog(context, 'Saturação de O2', '%', 'spo2', 'Batimentos por minuto', 'bpm', 'bpm');
       case 'Temperatura':
         return _buildSingleValueDialog(context, nome, '°C');
+      case 'Peso':
+        return _buildSingleValueDialog(context, nome, 'kg');
+      case 'Altura':
+        return _buildSingleValueDialog(context, nome, 'm');
       default:
         return _buildSingleValueDialog(context, nome, 'Valor');
     }
