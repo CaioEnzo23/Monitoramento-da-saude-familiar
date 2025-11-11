@@ -22,9 +22,9 @@ class DialogValorSaudeWidget extends StatelessWidget {
       case 'Glicemia Pós Brandial':
         return _buildSingleValueDialog(context, nome, 'mg/dL');
       case 'Pressão Arterial':
-        return _buildDualValueDialog(context, 'Pressão Sistólica', 'mmHg', 'sistolica', 'Pressão Diastólica', 'mmHg', 'diastolica');
+        return _buildDualValueDialog(context, 'Pressão Sistólica', 'mmHg', 'valor1', 'Pressão Diastólica', 'mmHg', 'valor2');
       case 'Oxigenação e Pulso':
-        return _buildDualValueDialog(context, 'Saturação de O2', '%', 'spo2', 'Batimentos por minuto', 'bpm', 'bpm');
+        return _buildDualValueDialog(context, 'Saturação de O2', '%', 'valor1', 'Batimentos por minuto', 'bpm', 'valor2');
       case 'Temperatura':
         return _buildSingleValueDialog(context, nome, '°C');
       case 'Peso':

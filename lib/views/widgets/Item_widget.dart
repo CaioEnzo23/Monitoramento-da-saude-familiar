@@ -38,91 +38,66 @@ class Item extends StatelessWidget {
     }
   }
 
-  String _formatValues() {
+  Widget _buildValuesWidget() {
     if (valores == null || valores!.isEmpty) {
-      return '';
+      return const SizedBox.shrink();
     }
 
-    final mappedValues = valores!.map((key, value) {
-      final label = _humanizeKey(key);
-      return MapEntry(label, value);
-    });
+    final valueStyle = const TextStyle(color: Colors.white70, fontSize: 13);
+    List<Widget> valueWidgets = [];
 
-    if (mappedValues.length == 1) {
-      final entry = mappedValues.entries.first;
-      return _formatSingleEntry(entry.key, entry.value.toString());
-    }
-
-    return mappedValues.entries
-        .map((entry) =>
-            _formatLabeledEntry(entry.key, entry.value.toString()))
-        .join('  •  ');
-  }
-
-  String _humanizeKey(String key) {
-    switch (key) {
-      case 'sistolica':
-        return 'Sistólica';
-      case 'diastolica':
-        return 'Diastólica';
-      case 'spo2':
-        return 'SpO₂';
-      case 'bpm':
-        return 'BPM';
-      case 'valor':
-        return 'Valor';
-      case 'peso':
-        return 'Peso';
-      case 'altura':
-        return 'Altura';
-      default:
-        if (key.isEmpty) return key;
-        return key[0].toUpperCase() + key.substring(1);
-    }
-  }
-
-  String _formatSingleEntry(String label, String value) {
-    final valueWithUnit = _attachUnit(value, label: label);
-    if (label.toLowerCase() == 'valor') {
-      return valueWithUnit;
-    }
-    return '$label: $valueWithUnit';
-  }
-
-  String _formatLabeledEntry(String label, String value) {
-    final valueWithUnit = _attachUnit(value, label: label);
-    return '$label: $valueWithUnit';
-  }
-
-  String _attachUnit(String value, {required String label}) {
     switch (nome) {
-      case 'Peso':
-        return '$value kg';
-      case 'Altura':
-        return '$value m';
-      case 'Temperatura':
-        return '$value °C';
+      case 'Oxigenação e Pulso':
+        final spo2 = valores!['valor1'] ?? 'N/A';
+        final bpm = valores!['valor2'] ?? 'N/A';
+        valueWidgets.add(Text('SpO2: $spo2%', style: valueStyle));
+        valueWidgets.add(Text('BPM: ${bpm}bpm', style: valueStyle));
+        break;
+      case 'Pressão Arterial':
+        final sys = valores!['valor1'] ?? 'N/A';
+        final dia = valores!['valor2'] ?? 'N/A';
+        valueWidgets.add(Text('Sistólica: $sys mmHg', style: valueStyle));
+        valueWidgets.add(Text('Diastólica: $dia mmHg', style: valueStyle));
+        break;
       case 'Glicemia em Jejum':
       case 'Glicemia Pós Brandial':
-        return '$value mg/dL';
+        final valor = valores!['valor'] ?? 'N/A';
+        valueWidgets.add(Text('$valor mg/dL', style: valueStyle));
+        break;
+      case 'Temperatura':
+        final valor = valores!['valor'] ?? 'N/A';
+        valueWidgets.add(Text('$valor °C', style: valueStyle));
+        break;
+      case 'Peso':
+        final valor = valores!['valor'] ?? 'N/A';
+        valueWidgets.add(Text('$valor kg', style: valueStyle));
+        break;
+      case 'Altura':
+        final valor = valores!['valor'] ?? 'N/A';
+        valueWidgets.add(Text('$valor m', style: valueStyle));
+        break;
       default:
-        if (label == 'SpO₂') {
-          return '$value%';
-        }
-        if (label == 'BPM') {
-          return '$value bpm';
-        }
-        if (label == 'Sistólica' || label == 'Diastólica') {
-          return '$value mmHg';
-        }
-        return value;
+        final valuesString = valores!.entries
+            .map((entry) => '${entry.key}: ${entry.value}')
+            .join(', ');
+        valueWidgets.add(Text(valuesString, style: valueStyle, overflow: TextOverflow.ellipsis));
+        break;
+    }
+
+    if (valueWidgets.length > 1) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: valueWidgets,
+      );
+    } else if (valueWidgets.isNotEmpty) {
+      return valueWidgets.first;
+    } else {
+      return const SizedBox.shrink();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final formattedValues = _formatValues();
-
     return GestureDetector(
       onTap: () => abrirDialogValorSaude(
         context: context,
@@ -157,19 +132,10 @@ class Item extends StatelessWidget {
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
-                    overflow: TextOverflow.ellipsis,
                   ),
-                  if (formattedValues.isNotEmpty) ...[
+                  if (valores != null && valores!.isNotEmpty) ...[
                     const SizedBox(height: 4),
-                    Text(
-                      formattedValues,
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 13,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    _buildValuesWidget(),
                   ],
                 ],
               ),
