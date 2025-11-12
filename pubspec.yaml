@@ -1,6 +1,5 @@
 name: monitoramento_saude_familiar
 description: "A new Flutter project."
-
 publish_to: "none"
 
 version: 1.0.0+1
@@ -24,7 +23,7 @@ dependencies:
       csv: ^5.0.1
       flutter_local_notifications: ^17.2.0
       timezone: ^0.9.3
-      # removed flutter_native_timezone due to Android plugin compatibility issues on Windows emulators
+      flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
       flutter_test:
@@ -35,3 +34,11 @@ flutter:
       uses-material-design: true
       assets:
             - assets/data/medication_2025.csv
+
+# 👇 ESTA PARTE DEVE FICAR AQUI (fora de dev_dependencies)
+flutter_launcher_icons:
+      android: true
+      ios: true
+      image_path: "assets/icons/icon.png"
+      adaptive_icon_background: "#FFFFFF"
+      adaptive_icon_foreground: "assets/icons/icon.png"
