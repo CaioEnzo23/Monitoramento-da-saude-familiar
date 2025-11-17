@@ -1,38 +1,38 @@
-Com certeza. Com base nos arquivos de código-fonte e no banner do projeto que você forneceu, aqui está um `README.md` completo e estruturado.
-
------
-
-# Monitoramento da Saúde Familiar
+# <img width="40" height="40" alt="image" src="https://github.com/user-attachments/assets/6496e9d2-5f2f-4dc5-9d01-8d3891d9f7fb" />  Monitoramento da Saúde Familiar
 
 ## 🏁 Status do Projeto
 
-[cite\_start]**Concluído.** O aplicativo foi validado como funcional, estável e fácil de usar[cite: 9].
+**Concluído.** O aplicativo foi validado como funcional, estável e fácil de usar[cite: 9].
 
 -----
 
 ## Tabela de Conteúdos
 
-  * [Descrição do Projeto](https://www.google.com/search?q=%23descri%C3%A7%C3%A3o-do-projeto)
-  * [Funcionalidades Principais](https://www.google.com/search?q=%23funcionalidades-principais)
-  * [Telas do App](https://www.google.com/search?q=%23telas-do-app)
-  * [Tecnologias Utilizadas](https://www.google.com/search?q=%23tecnologias-utilizadas)
-  * [Contexto Acadêmico](https://www.google.com/search?q=%23contexto-acad%C3%AAmico)
-  * [Equipe e Orientador](https://www.google.com/search?q=%23equipe-e-orientador)
-  * [Como Executar o Projeto](https://www.google.com/search?q=%23como-executar-o-projeto)
+  * Descrição do Projeto
+  * Funcionalidades Principais
+  * Telas do App
+  * Tecnologias Utilizadas
+  * Contexto Acadêmico
+  * Equipe e Orientador
+  * Como Executar o Projeto
 
 -----
 
 ## 📜 Descrição do Projeto
 
-[cite\_start]Cuidar da saúde de quem amamos é uma prioridade, mas na correria do dia a dia, acompanhar de perto indicadores como glicemia, pressão arterial e oxigenação pode ser um verdadeiro desafio[cite: 17]. [cite\_start]Muitas famílias que lidam com condições crônicas acabam com medições importantes anotadas em papéis ou perdidas em notas de celular [cite: 18][cite\_start], sem conseguir visualizar o histórico completo ou perceber tendências[cite: 17, 18].
+Este projeto tem como objetivo desenvolver uma aplicação móvel acessível e intuitiva para o gerenciamento da saúde familiar , utilizando o framework Flutter e o banco de dados local Hive.
 
-[cite\_start]Diante dessa dificuldade, o "Monitoramento da Saúde Familiar" foi criado como uma ferramenta digital acessível e intuitiva[cite: 20, 21]. [cite\_start]O objetivo é trazer mais tranquilidade ao cuidador, permitindo o gerenciamento de múltiplos perfis em um só lugar, facilitando o registro constante das métricas de saúde e, o mais importante, transformando dados brutos em informações visuais claras[cite: 21, 22].
+Cuidar da saúde de entes queridos é uma prioridade, mas o acompanhamento diário de indicadores vitais, como glicemia e pressão arterial, representa um desafio logístico. Atualmente, muitas famílias que lidam com condições crônicas registram medições importantes em papéis ou as perdem em notas de celular. Essa falta de organização centralizada gera insegurança e dificulta o gerenciamento proativo do bem-estar familiar.
+
+A transformação de dados brutos em informações visuais claras, como gráficos históricos e medidores de risco, é identificada como um objetivo fundamental para trazer tranquilidade ao cuidador. A validação de funções como o cadastro de múltiplos perfis em um só lugar, o registro de métricas e o agendamento de lembretes é crucial para que a ferramenta seja funcional e fácil de usar no dia a dia.
+
+Neste contexto, o presente projeto, "Monitoramento da Saúde Familiar" , aplica a tecnologia Flutter  para centralizar o registro dessas métricas. A solução oferece dashboards que mostram a evolução da saúde em gráficos, resultados recentes em medidores visuais e resumos de classificação (níveis "Altos" ou "Baixos") , oferecendo um apoio real para quem precisa monitorar e visualizar a saúde de quem ama.
 
 -----
 
 ## 🚀 Funcionalidades Principais
 
-  * [cite\_start]**Gerenciamento de Múltiplos Perfis:** Permite cadastrar [cite: 10] e alternar entre diferentes perfis de familiares (com nome, idade, peso e altura) através de um carrossel.
+  * **Gerenciamento de Múltiplos Perfis:** Permite cadastrar e alternar entre diferentes perfis de familiares (com nome, idade, peso e altura) através de um carrossel.
   * **Registro de Métricas:** Facilita o registro de um conjunto completo de métricas de saúde, incluindo 'Glicemia em Jejum', 'Glicemia Pós Brandial', 'Pressão Arterial', 'Oxigenação e Pulso', 'Temperatura', 'Peso' e 'Altura'.
   * **Agendamento e Rotinas:** Permite agendar métricas com diferentes constâncias: 'Única', 'Diária', 'Semanal', 'Mensal' ou em 'Dias específicos'.
   * **Lembretes e Notificações:** Agenda notificações locais para lembrar o usuário o horário de registrar uma medição.
@@ -47,7 +47,7 @@ Com certeza. Com base nos arquivos de código-fonte e no banner do projeto que v
 
 ## 📱 Telas do App
 
-[cite\_start]O aplicativo é composto por duas telas principais, conforme visto nos arquivos de código e no banner[cite: 25]:
+O aplicativo é composto por duas telas principais, conforme visto nos arquivos de código e no banner[cite: 25]:
 
 ### 1\. Home (`Home_page.dart`)
 
@@ -59,6 +59,8 @@ Com certeza. Com base nos arquivos de código-fonte e no banner do projeto que v
   * Adicionar novas métricas e agendamentos usando o botão flutuante.
   * Navegar para a tela de gráfico clicando em um item da lista.
 
+<img width="400" height="900" alt="Image" src="https://github.com/user-attachments/assets/eb24a847-a7d9-4d84-90e8-b2954143a7b4" />
+
 ### 2\. Dashboard (`Dash_page.dart`)
 
 Esta tela é aberta ao selecionar uma métrica e exibe:
@@ -68,11 +70,13 @@ Esta tela é aberta ao selecionar uma métrica e exibe:
   * Um gráfico de barras com o "Resumo de Classificação" (Baixo, Normal, Alto).
   * Um ou dois "Medidores da Última Métrica" para a medição mais recente.
 
+<img width="400" height="900" alt="Image" src="https://github.com/user-attachments/assets/ffae3cae-9bff-4390-8ce6-b095b522b6d3" />
+
 -----
 
 ## 🛠️ Tecnologias Utilizadas
 
-  * [cite\_start]**Flutter e Dart:** Framework e linguagem principal para o desenvolvimento[cite: 13].
+  * **Flutter e Dart:** Framework e linguagem principal para o desenvolvimento.
   * **Hive:** Banco de dados NoSQL local, leve e rápido, usado para todo o armazenamento de perfis e métricas.
   * **`fl_chart`:** Biblioteca para a criação dos gráficos de linha e de barra na tela de dashboard.
   * **`syncfusion_flutter_gauges`:** Biblioteca para a criação dos medidores (gauges) de risco.
@@ -82,10 +86,10 @@ Esta tela é aberta ao selecionar uma métrica e exibe:
 
 ## 🎓 Contexto Acadêmico
 
-[cite\_start]Este projeto foi desenvolvido para o **IV Simpósio de Disciplinas Extensionistas** do **Centro Universitário Estácio Ceará**, Campus Parangaba[cite: 2, 24].
+Este projeto foi desenvolvido para o **IV Simpósio de Disciplinas Extensionistas** do **Centro Universitário Estácio Ceará**, Campus Parangaba.
 
-  * [cite\_start]**Curso:** Ciências da Computação e Análise e Desenvolvimento de Sistemas[cite: 7].
-  * [cite\_start]**Disciplina:** ARA0089 – Programação para Dispositivos Móveis em Android[cite: 4].
+  * **Curso:** Ciências da Computação e Análise e Desenvolvimento de Sistemas.
+  * **Disciplina:** ARA0089 – Programação para Dispositivos Móveis em Android.
 
 -----
 
@@ -93,14 +97,14 @@ Esta tela é aberta ao selecionar uma métrica e exibe:
 
 ### Equipe 7
 
-  * [cite\_start]Kauan Bezerra Monteiro [cite: 5]
-  * [cite\_start]João Gonçalves Neto [cite: 5]
-  * [cite\_start]Caio Enzo de Menezes Vieira [cite: 5]
-  * [cite\_start]Edson Fernando Araujo Silva [cite: 5]
+  * Kauan Bezerra Monteiro 
+  * João Gonçalves Neto
+  * Caio Enzo de Menezes Vieira
+  * Edson Fernando Araujo Silva
 
 ### Orientador
 
-  * [cite\_start]Juciarias Nascimento [cite: 6]
+  * Juciarias Nascimento
 
 -----
 
